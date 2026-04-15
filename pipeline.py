@@ -5,7 +5,7 @@ import logging
 import argparse
 from pathlib import Path
 
-from exif_reader import read_folder_exif, validate_gps_coverage
+from exif_reader import read_folder_exif, validate_gps_coverage, get_folder_bbox
 from odm_local import run_odm_local, prepare_odm_input, copy_final_orthophoto
 
 
@@ -52,6 +52,13 @@ def process_folder(folder: Path, output_root: Path) -> dict:
 
     gps_ok, stats = validate_gps_coverage(exif_data)
     result["has_gps"] = gps_ok
+
+    # Aggiungi coordinate GPS (bounding box e centro)
+    bbox = get_folder_bbox(exif_data)
+    if bbox:
+        result["gps"] = {
+            "bounding_box": bbox,
+        }
 
     log.info(f"📍 GPS: {gps_ok} | {stats}")
 

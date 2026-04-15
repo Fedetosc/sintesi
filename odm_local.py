@@ -44,11 +44,18 @@ def run_odm_local(
         "-v", f"{input_folder}:/datasets/input",
         "-v", f"{output_root}:/datasets/output",
         "opendronemap/odm",
+
         "--project-path", "/datasets/output",
         "/datasets/input",
+
+        "--feature-quality", "high",
+        "--pc-quality", "high",
         "--orthophoto-resolution", "5",
-        "--feature-quality", "medium",
+        "--fast-orthophoto",
+        "--skip-report",
     ]
+    
+
 
     log.info("🐳 CMD: " + " ".join(cmd))
 
