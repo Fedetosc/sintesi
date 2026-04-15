@@ -1,0 +1,7 @@
+# EXIF/GPS reading
+exifread>=3.0.0
+
+# Image processing
+Pillow>=10.0.0
+
+
