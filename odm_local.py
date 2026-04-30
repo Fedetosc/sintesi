@@ -40,21 +40,25 @@ def run_odm_local(
     log.info(f"📂 Output: {output_root}")
 
     cmd = [
-        "docker", "run", "--rm",
-        "-v", f"{input_folder}:/datasets/input",
-        "-v", f"{output_root}:/datasets/output",
-        "opendronemap/odm",
+    "docker", "run", "--rm",
+    "-v", f"{input_folder}:/datasets/input",
+    "-v", f"{output_root}:/datasets/output",
+    "opendronemap/odm",
+    "--project-path", "/datasets/output",
+    "/datasets/input",
 
-        "--project-path", "/datasets/output",
-        "/datasets/input",
+    "--feature-quality", "high",
+    "--pc-quality", "high",
 
-        "--feature-quality", "high",
-        "--pc-quality", "high",
-        "--orthophoto-resolution", "5",
-        "--fast-orthophoto",
-        "--skip-report",
+    "--orthophoto-resolution", "5",
+    "--orthophoto-compression", "LZW",
+    "--orthophoto-cutline",
+
+    "--mesh-size", "150000",          # ↓ più pulito
+    "--min-num-features", "10000",    # ↓ meno rumore
+    "--matcher-neighbors", "6",       # ↓ meno errori sui bordi
+    "--skip-report",
     ]
-    
 
 
     log.info("🐳 CMD: " + " ".join(cmd))
@@ -69,10 +73,6 @@ def run_odm_local(
     log.info("🔍 Cerco ortofoto...")
 
     candidates = list(base.rglob("odm_orthophoto*.tif"))
-
-    if not candidates:
-        log.warning("⚠ nessuna ortofoto trovata in .tif, provo png")
-        candidates = list(base.rglob("odm_orthophoto*.png"))
 
     if not candidates:
         log.error("❌ Nessuna ortofoto trovata")
